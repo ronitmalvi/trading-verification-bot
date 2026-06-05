@@ -111,18 +111,18 @@ def send_main_menu(phone):
     )
 # def send_main_menu(phone):
 
-    send_text_message(
-        phone,
-        """🚀 Trading Verification Portal
+#     send_text_message(
+#         phone,
+#         """🚀 Trading Verification Portal
 
-Please choose an option:
+# Please choose an option:
 
-1. Verify Trading Account
-2. FAQs
-3. Terms & Conditions
-4. Privacy Policy
-5. Support"""
-    )
+# 1. Verify Trading Account
+# 2. FAQs
+# 3. Terms & Conditions
+# 4. Privacy Policy
+# 5. Support"""
+#     )
 
 def send_broker_buttons(phone):
 
