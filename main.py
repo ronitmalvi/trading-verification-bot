@@ -1,6 +1,10 @@
 from fastapi import FastAPI, Request
-import requests
-import os
+
+from whatsapp_service import (
+    send_text_message,
+    send_main_menu,
+    send_broker_buttons
+)
 
 from session_manager import (
     get_state,
@@ -11,37 +15,6 @@ from session_manager import (
 app = FastAPI()
 
 VERIFY_TOKEN = "tradingbot123"
-
-
-def send_whatsapp_message(phone, message):
-
-    token = os.getenv("WHATSAPP_TOKEN")
-    phone_number_id = os.getenv("PHONE_NUMBER_ID")
-
-    url = f"https://graph.facebook.com/v23.0/{phone_number_id}/messages"
-
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json"
-    }
-
-    payload = {
-        "messaging_product": "whatsapp",
-        "to": phone,
-        "type": "text",
-        "text": {
-            "body": message
-        }
-    }
-
-    response = requests.post(
-        url,
-        headers=headers,
-        json=payload
-    )
-
-    print(response.status_code)
-    print(response.text)
 
 
 @app.get("/")
@@ -59,10 +32,7 @@ def verify_webhook(request: Request):
     token = request.query_params.get("hub.verify_token")
     challenge = request.query_params.get("hub.challenge")
 
-    if (
-        mode == "subscribe"
-        and token == VERIFY_TOKEN
-    ):
+    if mode == "subscribe" and token == VERIFY_TOKEN:
         return int(challenge)
 
     return {
@@ -75,26 +45,19 @@ async def receive_message(request: Request):
 
     data = await request.json()
 
-    print("\n========== WHATSAPP EVENT ==========")
     print(data)
 
     try:
 
-        if "entry" not in data:
-            return {"status": "received"}
-
-        changes = data["entry"][0].get(
-            "changes",
-            []
+        value = (
+            data["entry"][0]
+            ["changes"][0]
+            ["value"]
         )
 
-        if not changes:
-            return {"status": "received"}
-
-        value = changes[0].get(
-            "value",
-            {}
-        )
+        phone = None
+        selected_option = None
+        message_text = None
 
         if "messages" not in value:
             return {"status": "received"}
@@ -103,34 +66,51 @@ async def receive_message(request: Request):
 
         phone = message["from"]
 
-        if "text" not in message:
-            return {"status": "received"}
+        # ======================
+        # LIST MENU CLICK
+        # ======================
 
-        text = message["text"]["body"].strip()
+        if (
+            message.get("type")
+            == "interactive"
+        ):
 
-        print(f"Phone: {phone}")
-        print(f"Message: {text}")
+            interactive = message["interactive"]
+
+            if (
+                interactive["type"]
+                == "list_reply"
+            ):
+
+                selected_option = (
+                    interactive["list_reply"]["id"]
+                )
+
+            elif (
+                interactive["type"]
+                == "button_reply"
+            ):
+
+                selected_option = (
+                    interactive["button_reply"]["id"]
+                )
+
+        elif "text" in message:
+
+            message_text = (
+                message["text"]["body"]
+                .strip()
+            )
 
         user_state = get_state(phone)
 
-        # =========================
+        # ======================
         # START
-        # =========================
+        # ======================
 
         if user_state == "START":
 
-            send_whatsapp_message(
-                phone,
-                """🚀 Welcome to Trading Verification Portal
-
-Reply with:
-
-1 - Verify Trading Account
-2 - FAQs
-3 - Terms & Conditions
-4 - Privacy Policy
-5 - Support"""
-            )
+            send_main_menu(phone)
 
             set_state(
                 phone,
@@ -139,45 +119,60 @@ Reply with:
 
             return {"status": "received"}
 
-        # =========================
+        # ======================
         # MAIN MENU
-        # =========================
+        # ======================
 
         if user_state == "MAIN_MENU":
 
-            if text == "1":
+            if selected_option == "VERIFY_ACCOUNT":
 
-                send_whatsapp_message(
-                    phone,
-                    """Select Broker
-
-1 - XM Global
-2 - Delta Exchange"""
-                )
+                send_broker_buttons(phone)
 
                 set_state(
                     phone,
                     "WAITING_BROKER"
                 )
 
-            else:
+            elif selected_option == "FAQ":
 
-                send_whatsapp_message(
+                send_text_message(
                     phone,
-                    "Please select a valid option."
+                    "FAQs coming soon."
+                )
+
+            elif selected_option == "TERMS":
+
+                send_text_message(
+                    phone,
+                    "Terms & Conditions coming soon."
+                )
+
+            elif selected_option == "PRIVACY":
+
+                send_text_message(
+                    phone,
+                    "Privacy Policy coming soon."
+                )
+
+            elif selected_option == "SUPPORT":
+
+                send_text_message(
+                    phone,
+                    "Support coming soon."
                 )
 
             return {"status": "received"}
 
-        # =========================
-        # BROKER SELECTION
-        # =========================
+        # ======================
+        # BROKER BUTTONS
+        # ======================
 
         if user_state == "WAITING_BROKER":
 
-            if text == "1":
+            if selected_option == "XM":
 
-                send_whatsapp_message(
+                send_text_message(
                     phone,
                     "Please enter your XM Trading Account Number"
                 )
@@ -188,9 +183,9 @@ Reply with:
                     broker="XM"
                 )
 
-            elif text == "2":
+            elif selected_option == "DELTA":
 
-                send_whatsapp_message(
+                send_text_message(
                     phone,
                     "Please enter your Delta Trading Account Number"
                 )
@@ -201,28 +196,21 @@ Reply with:
                     broker="DELTA"
                 )
 
-            else:
-
-                send_whatsapp_message(
-                    phone,
-                    "Invalid broker selection."
-                )
-
             return {"status": "received"}
 
-        # =========================
-        # ACCOUNT NUMBER
-        # =========================
+        # ======================
+        # ACCOUNT INPUT
+        # ======================
 
         if user_state == "WAITING_ACCOUNT":
 
+            account_number = message_text
+
             session = get_session(phone)
 
-            broker = session.get("broker")
+            broker = session["broker"]
 
-            account_number = text
-
-            send_whatsapp_message(
+            send_text_message(
                 phone,
                 f"""🔍 Verifying Account
 
@@ -232,11 +220,9 @@ Account Number: {account_number}
 Please wait..."""
             )
 
-            send_whatsapp_message(
+            send_text_message(
                 phone,
-                """✅ Account Received
-
-Verification API will be connected next."""
+                "✅ Account Received\n\nXM API integration will be connected next."
             )
 
             set_state(
@@ -250,7 +236,7 @@ Verification API will be connected next."""
 
     except Exception as e:
 
-        print("ERROR:")
+        print("ERROR")
         print(str(e))
 
     return {"status": "received"}
