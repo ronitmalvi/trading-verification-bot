@@ -36,6 +36,7 @@ async def receive_message(request: Request):
 
     data = await request.json()
 
+    print("\n========== WHATSAPP EVENT ==========")
     print(data)
 
     return {
