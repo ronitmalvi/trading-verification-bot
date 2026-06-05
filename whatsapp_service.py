@@ -73,14 +73,6 @@ def send_main_menu(phone):
                                 "title": "FAQs"
                             },
                             {
-                                "id": "TERMS",
-                                "title": "Terms & Conditions"
-                            },
-                            {
-                                "id": "PRIVACY",
-                                "title": "Privacy Policy"
-                            },
-                            {
                                 "id": "SUPPORT",
                                 "title": "Support"
                             }

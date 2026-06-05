@@ -141,19 +141,19 @@ async def receive_message(request: Request):
                     "FAQs coming soon."
                 )
 
-            elif selected_option == "TERMS":
+            # elif selected_option == "TERMS":
 
-                send_text_message(
-                    phone,
-                    "Terms & Conditions coming soon."
-                )
+            #     send_text_message(
+            #         phone,
+            #         "Terms & Conditions coming soon."
+            #     )
 
-            elif selected_option == "PRIVACY":
+            # elif selected_option == "PRIVACY":
 
-                send_text_message(
-                    phone,
-                    "Privacy Policy coming soon."
-                )
+            #     send_text_message(
+            #         phone,
+            #         "Privacy Policy coming soon."
+            #     )
 
             elif selected_option == "SUPPORT":
 
