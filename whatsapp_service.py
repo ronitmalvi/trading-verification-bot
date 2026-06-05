@@ -19,6 +19,27 @@ def get_url():
     return f"https://graph.facebook.com/v23.0/{phone_number_id}/messages"
 
 
+# def send_text_message(phone, message):
+
+#     payload = {
+#         "messaging_product": "whatsapp",
+#         "to": phone,
+#         "type": "text",
+#         "text": {
+#             "body": message
+#         }
+#     }
+
+#     response = requests.post(
+#         get_url(),
+#         headers=get_headers(),
+#         json=payload
+#     )
+
+#     print(response.status_code)
+#     print(response.text)
+
+
 def send_text_message(phone, message):
 
     payload = {
@@ -36,59 +57,72 @@ def send_text_message(phone, message):
         json=payload
     )
 
+    print("========== SEND MESSAGE ==========")
     print(response.status_code)
     print(response.text)
+    
+# def send_main_menu(phone):
 
+#     payload = {
+#         "messaging_product": "whatsapp",
+#         "to": phone,
+#         "type": "interactive",
+#         "interactive": {
+#             "type": "button",
+#             "header": {
+#                 "type": "text",
+#                 "text": "Trading Verification Portal"
+#             },
+#             "body": {
+#                 "text": "Please choose an option"
+#             },
+#             # "footer": {
+#             #     "text": "Powered by Trading Verification Bot"
+#             # },
+#             "action": {
+#                 "button": "Open Menu",
+#                 "sections": [
+#                     {
+#                         "title": "Main Menu",
+#                         "rows": [
+#                             {
+#                                 "id": "VERIFY_ACCOUNT",
+#                                 "title": "Verify Trading Account"
+#                             },
+#                             {
+#                                 "id": "FAQ",
+#                                 "title": "FAQs"
+#                             },
+#                             {
+#                                 "id": "SUPPORT",
+#                                 "title": "Support"
+#                             }
+#                         ]
+#                     }
+#                 ]
+#             }
+#         }
+#     }
 
+#     requests.post(
+#         get_url(),
+#         headers=get_headers(),
+#         json=payload
+#     )
 def send_main_menu(phone):
 
-    payload = {
-        "messaging_product": "whatsapp",
-        "to": phone,
-        "type": "interactive",
-        "interactive": {
-            "type": "button",
-            "header": {
-                "type": "text",
-                "text": "Trading Verification Portal"
-            },
-            "body": {
-                "text": "Please choose an option"
-            },
-            # "footer": {
-            #     "text": "Powered by Trading Verification Bot"
-            # },
-            "action": {
-                "button": "Open Menu",
-                "sections": [
-                    {
-                        "title": "Main Menu",
-                        "rows": [
-                            {
-                                "id": "VERIFY_ACCOUNT",
-                                "title": "Verify Trading Account"
-                            },
-                            {
-                                "id": "FAQ",
-                                "title": "FAQs"
-                            },
-                            {
-                                "id": "SUPPORT",
-                                "title": "Support"
-                            }
-                        ]
-                    }
-                ]
-            }
-        }
-    }
+    send_text_message(
+        phone,
+        """🚀 Trading Verification Portal
 
-    requests.post(
-        get_url(),
-        headers=get_headers(),
-        json=payload
+Please choose an option:
+
+1. Verify Trading Account
+2. FAQs
+3. Terms & Conditions
+4. Privacy Policy
+5. Support"""
     )
-
 
 def send_broker_buttons(phone):
 
