@@ -101,6 +101,31 @@ async def receive_message(request: Request):
                 message["text"]["body"]
                 .strip()
             )
+        
+        # ==================================
+        # RESET CONVERSATION
+        # ==================================
+
+        if (
+            message_text and
+            message_text.lower() in [
+                "hi",
+                "hello",
+                "start",
+                "menu",
+                "restart",
+                "reset"
+            ]
+        ):
+
+            set_state(
+                phone,
+                "MAIN_MENU"
+            )
+
+            send_main_menu(phone)
+
+            return {"status": "received"}
 
         user_state = get_state(phone)
 
