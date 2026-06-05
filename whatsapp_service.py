@@ -47,7 +47,7 @@ def send_main_menu(phone):
         "to": phone,
         "type": "interactive",
         "interactive": {
-            "type": "list",
+            "type": "button",
             "header": {
                 "type": "text",
                 "text": "Trading Verification Portal"
@@ -55,9 +55,9 @@ def send_main_menu(phone):
             "body": {
                 "text": "Please choose an option"
             },
-            "footer": {
-                "text": "Powered by Trading Verification Bot"
-            },
+            # "footer": {
+            #     "text": "Powered by Trading Verification Bot"
+            # },
             "action": {
                 "button": "Open Menu",
                 "sections": [
