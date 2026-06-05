@@ -107,17 +107,6 @@ async def receive_message(request: Request):
 
                     phone = message["from"]
 
-                    text = ""
-
-                    if (
-                        "text" in message
-                        and "body" in message["text"]
-                    ):
-                        text = message["text"]["body"]
-
-                    print(f"Message from {phone}")
-                    print(f"Text: {text}")
-
                     welcome_message = """
 🚀 Welcome to Trading Verification Portal
 
@@ -138,10 +127,6 @@ async def receive_message(request: Request):
                     )
 
     except Exception as e:
-
-        print("ERROR:")
         print(str(e))
 
-    return {
-        "status": "received"
-    }
+    return {"status": "received"}
