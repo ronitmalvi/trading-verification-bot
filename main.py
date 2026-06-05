@@ -36,7 +36,6 @@ async def receive_message(request: Request):
 
     data = await request.json()
 
-    print("\n===== NEW MESSAGE =====")
     print(data)
 
     return {
