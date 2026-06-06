@@ -126,21 +126,21 @@ def send_main_menu(phone):
                         "type": "reply",
                         "reply": {
                             "id": "VERIFY_ACCOUNT",
-                            "title": "Verify Account"
+                            "title": "✅ Verify Account"
                         }
                     },
                     {
                         "type": "reply",
                         "reply": {
                             "id": "FAQ",
-                            "title": "FAQs"
+                            "title": "📘 FAQs"
                         }
                     },
                     {
                         "type": "reply",
                         "reply": {
                             "id": "SUPPORT",
-                            "title": "Support"
+                            "title": "💬 Support"
                         }
                     }
                 ]
@@ -174,14 +174,21 @@ def send_broker_buttons(phone):
                         "type": "reply",
                         "reply": {
                             "id": "XM",
-                            "title": "XM Global"
+                            "title": "📈 XM Global"
                         }
                     },
                     {
                         "type": "reply",
                         "reply": {
                             "id": "DELTA",
-                            "title": "Delta Exchange"
+                            "title": "⚡ Delta Exchange"
+                        }
+                    },
+                    {
+                        "type": "reply",
+                        "reply": {
+                            "id": "BACK_MAIN",
+                            "title": "⬅ Back"
                         }
                     }
                 ]

@@ -12,6 +12,8 @@ from session_manager import (
     get_session
 )
 
+from xm_service import (verify_xm_account)
+
 app = FastAPI()
 
 VERIFY_TOKEN = "tradingbot123"
@@ -199,26 +201,35 @@ async def receive_message(request: Request):
 
                 send_text_message(
                     phone,
-                    "Please enter your XM Trading Account Number"
+                    "Please enter your XM Global Trading Account Number"
                 )
 
                 set_state(
                     phone,
                     "WAITING_ACCOUNT",
-                    broker="XM"
+                    broker="XM Global"
                 )
 
             elif selected_option == "DELTA":
 
                 send_text_message(
                     phone,
-                    "Please enter your Delta Trading Account Number"
+                    "Please enter your Delta Exchange Trading Account Number"
                 )
 
                 set_state(
                     phone,
                     "WAITING_ACCOUNT",
-                    broker="DELTA"
+                    broker="Delta Exchange"
+                )
+            
+            elif selected_option == "BACK_MAIN":
+
+                send_main_menu(phone)
+
+                set_state(
+                    phone,
+                    "MAIN_MENU"
                 )
 
             return {"status": "received"}
@@ -229,7 +240,16 @@ async def receive_message(request: Request):
 
         if user_state == "WAITING_ACCOUNT":
 
-            account_number = message_text
+            account_number = message_text.strip()
+
+            if not account_number.isdigit():
+
+                send_text_message(
+                    phone,
+                    "Please enter a valid numeric trading account number."
+                )
+
+                return {"status": "received"}
 
             session = get_session(phone)
 
@@ -239,16 +259,38 @@ async def receive_message(request: Request):
                 phone,
                 f"""🔍 Verifying Account
 
-Broker: {broker}
-Account Number: {account_number}
+                Broker: {broker}
+                Account Number: {account_number}
 
-Please wait..."""
+                Please wait..."""
             )
 
-            send_text_message(
-                phone,
-                "✅ Account Received\n\nXM API integration will be connected next."
+            # send_text_message(
+            #     phone,
+            #     "✅ Account Received\n\nXM API integration will be connected next."
+            # )
+
+            result = verify_xm_account(
+                account_number
             )
+
+            if result["verified"]:
+
+                send_text_message(
+                    phone,
+                    f"""✅ Account Verified
+
+            Broker: {broker}
+            Account: {account_number}
+            """
+                )
+
+            else:
+
+                send_text_message(
+                    phone,
+                    "❌ Account verification failed."
+                )
 
             set_state(
                 phone,
