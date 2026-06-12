@@ -1,3 +1,8 @@
+from database import engine
+from models import Base
+
+Base.metadata.create_all(bind=engine)
+
 from fastapi import FastAPI, Request
 
 from whatsapp_service import (
@@ -26,6 +31,36 @@ def home():
         "message": "Trading Verification Bot Running"
     }
 
+@app.get("/db-test")
+def db_test():
+
+    from database import SessionLocal
+    from models import UserSession
+
+    db = SessionLocal()
+
+    try:
+
+        session = UserSession(
+            phone_number="919999999999",
+            state="TEST"
+        )
+
+        db.add(session)
+        db.commit()
+
+        return {
+            "status": "database connected"
+        }
+
+    except Exception as e:
+
+        return {
+            "error": str(e)
+        }
+
+    finally:
+        db.close()
 
 @app.get("/webhook")
 def verify_webhook(request: Request):
