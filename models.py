@@ -1,9 +1,4 @@
-from sqlalchemy import (
-    Column,
-    Integer,
-    String
-)
-
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
@@ -15,7 +10,8 @@ class UserSession(Base):
 
     id = Column(
         Integer,
-        primary_key=True
+        primary_key=True,
+        index=True
     )
 
     phone_number = Column(

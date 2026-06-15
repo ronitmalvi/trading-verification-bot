@@ -288,7 +288,7 @@ async def receive_message(request: Request):
 
             session = get_session(phone)
 
-            broker = session["broker"]
+            broker = session.broker
 
             send_text_message(
                 phone,
