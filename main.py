@@ -4,6 +4,7 @@ from models import Base
 Base.metadata.create_all(bind=engine)
 
 from fastapi import FastAPI, Request
+from google_sheet_service import verify_account
 
 from whatsapp_service import (
     send_text_message,
@@ -17,12 +18,22 @@ from session_manager import (
     get_session
 )
 
-from xm_service import (verify_xm_account)
 
 app = FastAPI()
 
 VERIFY_TOKEN = "tradingbot123"
 
+@app.get("/sheet-test/{account_number}")
+def sheet_test(account_number: str):
+
+    result = verify_account(
+        account_number
+    )
+
+    return {
+        "account": account_number,
+        "verified": result
+    }
 
 @app.get("/")
 def home():
@@ -305,28 +316,25 @@ async def receive_message(request: Request):
             #     "✅ Account Received\n\nXM API integration will be connected next."
             # )
 
-            result = verify_xm_account(
-                account_number
-            )
+            result = verify_account(account_number)
 
-            if result["verified"]:
+            if result:
 
                 send_text_message(
                     phone,
-                    f"""✅ Account Verified
+                    """✅ Account Verified
 
-            Broker: {broker}
-            Account: {account_number}
-            """
+            Welcome to Premium Access."""
                 )
 
             else:
 
                 send_text_message(
                     phone,
-                    "❌ Account verification failed."
-                )
+                    """❌ Verification Failed
 
+            Account not found or not eligible."""
+                )
             set_state(
                 phone,
                 "VERIFICATION_COMPLETE",
