@@ -6,7 +6,8 @@ from google.oauth2.service_account import Credentials
 
 
 SCOPES = [
-    "https://www.googleapis.com/auth/spreadsheets.readonly"
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive.readonly"
 ]
 
 
@@ -21,8 +22,8 @@ creds = Credentials.from_service_account_info(
 
 client = gspread.authorize(creds)
 
-sheet = client.open(
-    os.getenv("GOOGLE_SHEET_NAME")
+sheet = client.open_by_key(
+    os.getenv("GOOGLE_SHEET_ID")
 ).sheet1
 
 def verify_account(account_number):
