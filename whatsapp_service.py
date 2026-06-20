@@ -201,3 +201,48 @@ def send_broker_buttons(phone):
         headers=get_headers(),
         json=payload
     )
+
+def send_verified_menu(phone):
+
+    payload = {
+        "messaging_product": "whatsapp",
+        "to": phone,
+        "type": "interactive",
+        "interactive": {
+            "type": "button",
+            "body": {
+                "text": "🎉 Account Already Verified\n\nChoose an option."
+            },
+            "action": {
+                "buttons": [
+                    {
+                        "type": "reply",
+                        "reply": {
+                            "id": "PREMIUM",
+                            "title": "👥 Premium"
+                        }
+                    },
+                    {
+                        "type": "reply",
+                        "reply": {
+                            "id": "FAQ",
+                            "title": "📘 FAQs"
+                        }
+                    },
+                    {
+                        "type": "reply",
+                        "reply": {
+                            "id": "SUPPORT",
+                            "title": "💬 Support"
+                        }
+                    }
+                ]
+            }
+        }
+    }
+
+    requests.post(
+        get_url(),
+        headers=get_headers(),
+        json=payload
+    )

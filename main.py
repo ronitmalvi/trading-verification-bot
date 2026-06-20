@@ -9,13 +9,15 @@ from google_sheet_service import verify_account
 from whatsapp_service import (
     send_text_message,
     send_main_menu,
-    send_broker_buttons
+    send_broker_buttons,
+    send_verified_menu
 )
 
 from session_manager import (
     get_state,
     set_state,
-    get_session
+    get_session,
+    mark_verified
 )
 
 
@@ -166,12 +168,23 @@ async def receive_message(request: Request):
             ]
         ):
 
-            set_state(
-                phone,
-                "MAIN_MENU"
-            )
+            session = get_session(phone)
 
-            send_main_menu(phone)
+            if (
+                session and
+                session.is_verified
+            ):
+
+                send_verified_menu(phone)
+
+            else:
+
+                set_state(
+                    phone,
+                    "MAIN_MENU"
+                )
+
+                send_main_menu(phone)
 
             return {"status": "received"}
 
@@ -320,12 +333,16 @@ async def receive_message(request: Request):
 
             if result:
 
+                mark_verified(phone)
+
                 send_text_message(
                     phone,
                     """✅ Account Verified
 
             Welcome to Premium Access."""
                 )
+
+                send_verified_menu(phone)
 
             else:
 

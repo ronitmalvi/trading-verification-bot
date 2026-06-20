@@ -89,3 +89,28 @@ def set_state(
 
     finally:
         db.close()
+
+def mark_verified(phone):
+
+    db = SessionLocal()
+
+    try:
+
+        session = (
+            db.query(UserSession)
+            .filter(
+                UserSession.phone_number == phone
+            )
+            .first()
+        )
+
+        if session:
+
+            session.is_verified = True
+
+            session.state = "VERIFIED"
+
+            db.commit()
+
+    finally:
+        db.close()

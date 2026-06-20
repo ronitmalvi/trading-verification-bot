@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String,Boolean
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
@@ -8,20 +8,14 @@ class UserSession(Base):
 
     __tablename__ = "user_sessions"
 
-    id = Column(
-        Integer,
-        primary_key=True,
-        index=True
-    )
+    id = Column(Integer, primary_key=True)
 
-    phone_number = Column(
-        String,
-        unique=True,
-        nullable=False
-    )
+    phone_number = Column(String, unique=True)
 
     state = Column(String)
 
     broker = Column(String)
 
     account_number = Column(String)
+
+    is_verified = Column(Boolean, default=False)
