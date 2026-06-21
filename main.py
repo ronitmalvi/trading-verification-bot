@@ -23,7 +23,8 @@ from session_manager import (
     get_state,
     set_state,
     get_session,
-    mark_verified
+    mark_verified,
+    get_verified_state
 )
 
 
@@ -264,6 +265,7 @@ async def receive_message(request: Request):
             return {"status": "received"}
 
         user_state = get_state(phone)
+        user_verified_state = get_verified_state(phone)
 
         # ======================
         # START
@@ -398,10 +400,10 @@ async def receive_message(request: Request):
                 phone,
                 f"""🔍 Verifying Account
 
-                Broker: {broker}
-                Account Number: {account_number}
+        Broker: {broker}
+        Account Number: {account_number}
 
-                Please wait..."""
+        Please wait..."""
             )
 
             # send_text_message(
@@ -419,7 +421,7 @@ async def receive_message(request: Request):
                     phone,
                     """✅ Account Verified
 
-            Welcome to Premium Access."""
+        Welcome to Premium Access."""
                 )
 
                 send_verified_menu(phone)
@@ -430,7 +432,7 @@ async def receive_message(request: Request):
                     phone,
                     """❌ Verification Failed
 
-            Account not found or not eligible."""
+        Account not found or not eligible."""
                 )
             set_state(
                 phone,
@@ -441,8 +443,9 @@ async def receive_message(request: Request):
 
             return {"status": "received"}
         
-        if user_state == "VERIFIED":
-
+        # if user_state == "VERIFIED":
+        if user_verified_state == True:
+            
             if selected_option == "PREMIUM":
 
                 send_text_message(
