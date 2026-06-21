@@ -373,6 +373,46 @@ async def receive_message(request: Request):
 
             return {"status": "received"}
         
+        if user_state == "VERIFIED":
+
+            if selected_option == "PREMIUM":
+
+                send_text_message(
+                    phone,
+                    """👥 Premium Access
+
+        Telegram:
+        https://t.me/yourgroup
+
+        WhatsApp:
+        https://chat.whatsapp.com/xxxxx
+        """
+                )
+
+            elif selected_option == "FAQ":
+
+                send_text_message(
+                    phone,
+                    """📘 FAQs
+
+        Your FAQs here.
+        """
+                )
+
+            elif selected_option == "SUPPORT":
+
+                send_text_message(
+                    phone,
+                    "💬 Please describe your issue."
+                )
+
+                set_state(
+                    phone,
+                    "WAITING_SUPPORT_QUERY"
+                )
+
+            return {"status": "received"}
+        
         if user_state == "WAITING_SUPPORT_QUERY":
 
             ticket_id = create_ticket(
