@@ -413,7 +413,7 @@ async def receive_message(request: Request):
 
             if result:
 
-                mark_verified(phone)
+                mark_verified(phone,account_number)
 
                 send_text_message(
                     phone,

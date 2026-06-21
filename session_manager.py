@@ -90,7 +90,7 @@ def set_state(
     finally:
         db.close()
 
-def mark_verified(phone):
+def mark_verified(phone,account_number):
 
     db = SessionLocal()
 
@@ -107,7 +107,7 @@ def mark_verified(phone):
         if session:
 
             session.is_verified = True
-
+            session.account_number = account_number
             session.state = "VERIFIED"
 
             db.commit()
