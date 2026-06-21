@@ -264,7 +264,6 @@ async def receive_message(request: Request):
             return {"status": "received"}
 
         user_state = get_state(phone)
-        user_verified_state = get_verified_state(phone)
 
         # ======================
         # START
