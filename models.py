@@ -24,14 +24,12 @@ class SupportTicket(Base):
 
     __tablename__ = "support_tickets"
 
-    id = Column(
-        Integer,
-        primary_key=True,
-        index=True
-    )
+    id = Column(Integer, primary_key=True)
 
     user_phone = Column(String)
 
     query = Column(String)
+
+    resolution = Column(String)
 
     status = Column(String)

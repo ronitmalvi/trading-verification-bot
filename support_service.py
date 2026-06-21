@@ -1,6 +1,37 @@
 from database import SessionLocal
 from models import SupportTicket
 
+def resolve_ticket(
+    ticket_id,
+    resolution
+):
+
+    db = SessionLocal()
+
+    try:
+
+        ticket = (
+            db.query(SupportTicket)
+            .filter(
+                SupportTicket.id == ticket_id
+            )
+            .first()
+        )
+
+        if not ticket:
+            return None
+
+        ticket.resolution = resolution
+
+        ticket.status = "RESOLVED"
+
+        db.commit()
+
+        return ticket
+
+    finally:
+        db.close()
+
 
 def create_ticket(
     phone,

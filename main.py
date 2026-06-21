@@ -1,3 +1,5 @@
+import os
+from support_service import resolve_ticket
 from database import engine
 from models import Base
 
@@ -156,6 +158,72 @@ async def receive_message(request: Request):
                 .strip()
             )
         
+        # ==================================
+        # ADMIN RESOLUTION COMMAND
+        # ==================================
+
+        ADMIN_PHONE = os.getenv(
+            "ADMIN_PHONE"
+        )
+
+        if phone == ADMIN_PHONE:
+
+            if (
+                message_text and
+                message_text.startswith("RESOLVE ")
+            ):
+
+                parts = (
+                    message_text.split(
+                        " ",
+                        2
+                    )
+                )
+
+                if len(parts) < 3:
+
+                    send_text_message(
+                        phone,
+                        "Format: RESOLVE <ticket_id> <message>"
+                    )
+
+                    return {"status": "received"}
+
+                ticket_id = int(parts[1])
+
+                resolution = parts[2]
+
+                ticket = resolve_ticket(
+                    ticket_id,
+                    resolution
+                )
+
+                if not ticket:
+
+                    send_text_message(
+                        phone,
+                        "Ticket not found."
+                    )
+
+                    return {"status": "received"}
+
+                send_text_message(
+                    ticket.user_phone,
+                    f"""
+        ✅ Support Update
+
+        Ticket ID: {ticket.id}
+
+        {resolution}
+        """
+                )
+
+                send_text_message(
+                    phone,
+                    f"Ticket {ticket.id} resolved."
+                )
+
+                return {"status": "received"}
         # ==================================
         # RESET CONVERSATION
         # ==================================
