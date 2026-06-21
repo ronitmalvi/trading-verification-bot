@@ -208,11 +208,11 @@ async def receive_message(request: Request):
                     return {"status": "received"}
 
                 send_text_message(
-                    ticket.user_phone,
+                    ticket["user_phone"],
                     f"""
         ✅ Support Update
 
-        Ticket ID: {ticket.id}
+        Ticket ID: {ticket["id"]}
 
         {resolution}
         """
@@ -220,7 +220,7 @@ async def receive_message(request: Request):
 
                 send_text_message(
                     phone,
-                    f"Ticket {ticket.id} resolved."
+                    f"Ticket {ticket["id"]} resolved."
                 )
 
                 return {"status": "received"}

@@ -22,12 +22,14 @@ def resolve_ticket(
             return None
 
         ticket.resolution = resolution
-
         ticket.status = "RESOLVED"
 
         db.commit()
 
-        return ticket
+        return {
+            "id": ticket.id,
+            "user_phone": ticket.user_phone
+        }
 
     finally:
         db.close()
