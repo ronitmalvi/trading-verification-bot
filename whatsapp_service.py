@@ -246,3 +246,28 @@ def send_verified_menu(phone):
         headers=get_headers(),
         json=payload
     )
+
+def send_support_ticket_to_admin(
+    ticket_id,
+    user_phone,
+    query
+):
+
+    admin_phone = os.getenv(
+        "ADMIN_PHONE"
+    )
+
+    send_text_message(
+        admin_phone,
+        f"""
+🚨 New Support Ticket
+
+Ticket ID: {ticket_id}
+
+User:
+{user_phone}
+
+Issue:
+{query}
+"""
+    )
