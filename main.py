@@ -23,8 +23,7 @@ from session_manager import (
     get_state,
     set_state,
     get_session,
-    mark_verified,
-    get_verified_state
+    mark_verified
 )
 
 
@@ -443,9 +442,9 @@ async def receive_message(request: Request):
 
             return {"status": "received"}
         
-        # if user_state == "VERIFIED":
-        if user_verified_state == True:
-            
+        if user_state == "VERIFIED":
+        #if user_verified_state == True:
+
             if selected_option == "PREMIUM":
 
                 send_text_message(

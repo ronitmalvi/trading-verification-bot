@@ -24,29 +24,6 @@ def get_state(phone):
     finally:
         db.close()
 
-def get_verified_state(phone):
-
-    db = SessionLocal()
-
-    try:
-
-        session = (
-            db.query(UserSession)
-            .filter(
-                UserSession.phone_number == phone
-            )
-            .first()
-        )
-
-        if not session:
-            return "START"
-
-        return session.is_verified
-
-    finally:
-        db.close()
-
-
 def get_session(phone):
 
     db = SessionLocal()
