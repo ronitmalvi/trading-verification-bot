@@ -35,9 +35,9 @@ def verify_account(account_number):
         if str(row["Account Number"]) == str(account_number):
 
             if (
-                str(row["KYC Verified"]).upper() == "YES"
+                str(row["KYC Verified"]).upper() == "Y"
                 and
-                str(row["Live Account"]).upper() == "YES"
+                str(row["Live Account"]).upper() == "Y"
             ):
 
                 return True
