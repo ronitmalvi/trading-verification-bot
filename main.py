@@ -160,7 +160,10 @@ async def receive_message(request: Request):
             message_text and
             message_text.lower() in [
                 "hi",
+                "hii",
+                "hiii",
                 "hello",
+                "hey",
                 "start",
                 "menu",
                 "restart",
