@@ -489,11 +489,12 @@ async def receive_message(request: Request):
 
         if user_state == "WAITING_SUPPORT_QUERY":
 
+            print("INSIDE SUPPORT QUERY")
             ticket_id = create_ticket(
                 phone,
                 message_text
             )
-
+            print("TICKET CREATED:", ticket_id)
             send_support_ticket_to_admin(
                 ticket_id,
                 phone,
