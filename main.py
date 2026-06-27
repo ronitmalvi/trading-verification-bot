@@ -440,6 +440,37 @@ async def receive_message(request: Request):
             )
 
             return {"status": "received"}
+        
+        if user_state == "WAITING_SUPPORT_QUERY":
+
+            ticket_id = create_ticket(
+                phone,
+                message_text
+            )
+
+            send_support_ticket_to_admin(
+                ticket_id,
+                phone,
+                message_text
+            )
+
+            send_text_message(
+                phone,
+                f"""
+        ✅ Support Request Submitted
+
+        Ticket ID: {ticket_id}
+
+        Our team will contact you shortly.
+        """
+            )
+
+            set_state(
+                phone,
+                "MAIN_MENU"
+            )
+
+            return {"status": "received"}
             
         session = get_session(phone)
 
@@ -486,38 +517,6 @@ async def receive_message(request: Request):
 
             return {"status": "received"}
 
-
-        if user_state == "WAITING_SUPPORT_QUERY":
-
-            print("INSIDE SUPPORT QUERY")
-            ticket_id = create_ticket(
-                phone,
-                message_text
-            )
-            print("TICKET CREATED:", ticket_id)
-            send_support_ticket_to_admin(
-                ticket_id,
-                phone,
-                message_text
-            )
-
-            send_text_message(
-                phone,
-                f"""
-        ✅ Support Request Submitted
-
-        Ticket ID: {ticket_id}
-
-        Our team will contact you shortly.
-        """
-            )
-
-            set_state(
-                phone,
-                "MAIN_MENU"
-            )
-
-            return {"status": "received"}
 
     except Exception as e:
 
