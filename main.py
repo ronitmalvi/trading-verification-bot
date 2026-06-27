@@ -440,9 +440,13 @@ async def receive_message(request: Request):
             )
 
             return {"status": "received"}
-        
-        if user_state == "VERIFIED":
-        #if user_verified_state == True:
+            
+        session = get_session(phone)
+
+        if (
+            session and
+            session.is_verified
+        ):
 
             if selected_option == "PREMIUM":
 
@@ -481,7 +485,8 @@ async def receive_message(request: Request):
                 )
 
             return {"status": "received"}
-        
+
+
         if user_state == "WAITING_SUPPORT_QUERY":
 
             ticket_id = create_ticket(
